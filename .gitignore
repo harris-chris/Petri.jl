@@ -1,6 +1,5 @@
 Manifest.toml
 *.ipynb
 docs/build/*
-notes/*
 .jupyter
 result
