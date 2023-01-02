@@ -1,7 +1,9 @@
-using DataFrames
+using StructArrays
 using Dates
 
-export AbstractAsset, DefinedPriceAsset
+export AbstractAsset, ExternallyPricedAsset
+export PricesAtTime, PricesSeries
+export ValueAtTime, ValuesSeries
 export get_prices
 
 """
@@ -15,21 +17,34 @@ Interface definition:
 """
 abstract type AbstractAsset end
 
-struct DefinedPriceAsset <: AbstractAsset
-    name::String
-    prices::Vector{Tuple{DateTime, Float64}}
+struct PriceAtTime
+    time::DateTime
+    val::Float64
 end
-Base.show(asset::DefinedPriceAsset) = asset.name
+
+struct ValueAtTime
+    time::DateTime
+    val::Float64
+end
+
+PricesSeries = StructArray{PriceAtTime}
+ValuesSeries = StructArray{ValueAtTime}
+
+struct ExternallyPricedAsset <: AbstractAsset
+    name::String
+    prices::PricesSeries
+    # price_stale_if::Function
+end
+Base.show(asset::ExternallyPricedAsset) = asset.name
 
 function get_prices(
-        asset::DefinedPriceAsset,
+        asset::ExternallyPricedAsset,
         times::Vector{DateTime},
-    )::DataFrame
-    complete = DataFrame(
-        Time=map(first, asset.prices),
-        Price=map(last, asset.prices),
-    )
-    @info complete
-    filter(r -> r.Time in times, complete)
+    )::PricesSeries
+    # complete = DataFrame(
+    #     Time=map(first, asset.prices),
+    #     Price=map(last, asset.prices),
+    # )
+    filter(r -> r.time in times, asset.prices)
 end
 

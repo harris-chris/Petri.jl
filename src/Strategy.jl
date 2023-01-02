@@ -25,7 +25,10 @@ end
 
 # end
 
-function get_holdings(strategy::DefinedHoldingsStrategy)::Dict{DateTime, Holdings}
+function get_rebalances(
+        strategy::DefinedHoldingsStrategy,
+        holdings_table::HoldingsTable
+    )::HoldingsSeries
     strategy.holdings
 end
 
