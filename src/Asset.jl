@@ -30,10 +30,18 @@ end
 PricesSeries = StructArray{PriceAtTime}
 ValuesSeries = StructArray{ValueAtTime}
 
+function price_valid_until_eod(
+        valuation_time::DateTime,
+        price::PriceAtTime,
+    )::Bool
+    pt = price.time
+    price_eod = DateTime(year(pt), month(pt), day(pt), 23, 59, 59, 999)
+    price.time <= valuation_time && price_eod >= valuation_time
+end
+
 struct ExternallyPricedAsset <: AbstractAsset
     name::String
     prices::PricesSeries
-    # price_stale_if::Function
 end
 Base.show(asset::ExternallyPricedAsset) = asset.name
 
@@ -41,10 +49,10 @@ function get_prices(
         asset::ExternallyPricedAsset,
         times::Vector{DateTime},
     )::PricesSeries
-    # complete = DataFrame(
-    #     Time=map(first, asset.prices),
-    #     Price=map(last, asset.prices),
-    # )
-    filter(r -> r.time in times, asset.prices)
+    filter(asset.prices) do pr
+        any(times) do vt
+            price_valid_until_eod(vt, pr)
+        end
+    end
 end
 
