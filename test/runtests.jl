@@ -10,7 +10,8 @@ Pkg.develop(PackageSpec(path=petri_path))
 using Petri
 
 test_files = [
-    "asset.jl"
+    "asset.jl",
+    "Strategy.jl"
 ]
 
 println("Running tests:")

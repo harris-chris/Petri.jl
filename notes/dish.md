@@ -4,7 +4,10 @@ Dish
 A dish need only have one fundamental object - the `strategy` attribute. This is the only thing that determines the holdings.
 
 A strategy can call other strategies, and there are pre-provided strategies that do exactly that (act as a composite-forming strategy). A strategy also provides custom analytics. So a strategy is an interface. What are its basic requirements?
-- `get_rebalances(strategy::Strategy, holdings_table::HoldingsTable)::HoldingsSeries`
+- `get_holdings(strategy::Strategy)::HoldingsTable
+Note that in this next one, HoldingsTable is nullable: right at the start, we will have no HoldingsTable.
+- `get_rebalances(strategy::Strategy, holdings_table::Union{Nothing, HoldingsTable})::HoldingsSeries`
+Do we want to capture the individual rebalances, or just the HoldingsTable? How do we cache it?
 where
 `Holdings = Dict{Asset, Number}`
 
