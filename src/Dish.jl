@@ -4,6 +4,9 @@ using Dates
 include("Asset.jl")
 include("Strategy.jl")
 
+export Dish
+export get_positions_table
+
 struct Dish <: AbstractAsset
     strategy::AbstractStrategy
 end
@@ -30,11 +33,11 @@ function update_with_rebalance(
         rebalance::Positions,
         times::Vector{DateTime},
     )::Union{Nothing, PositionsTable}
-    asset_to_holdings = map(collect(rebalance)) do (asset, pos)
+    asset_to_holdings = map(collect(rebalance.positions)) do (asset, pos)
         prices_series = get_prices(asset, times)
         map(x -> x.val * pos, prices_series)
     end
-    DataFrame(asset_to_holdings)
+    DataFrame(asset_to_holdings, get_position_names(rebalance))
 end
 
 function update_with_rebalance(

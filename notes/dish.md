@@ -1,6 +1,9 @@
 Dish
 -----
 
+Define a rebalancing strategy
+How is `get_prices` meant to respond if it doesn't have prices for that time?
+
 A dish need only have one fundamental object - the `strategy` attribute. This is the only thing that determines the holdings.
 
 A strategy can call other strategies, and there are pre-provided strategies that do exactly that (act as a composite-forming strategy). A strategy also provides custom analytics. So a strategy is an interface. What are its basic requirements?
@@ -15,7 +18,6 @@ Note that we need holdings_table to be a parameter here because many dynamic str
 
 How is a strategy different from a dish?
 A dish can only hold one strategy
-The strategy
 A dish can hold other dishes, and manage them with one or more strategies
 So there is some kind of a difference?
 But the strategy would also be setting the sub-dishes
